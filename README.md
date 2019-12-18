@@ -2,7 +2,7 @@
 
 ## Overview
 
-* Create dotnet core micro-serivce with a single route /api/file/{file-name}
+* Create dotnet core micro-serivce with a single route GET /api/file/{file-name}
 * The service will not run on Azure
 * The code will check whether file is already present in a Azure Blob Storage #1
 * If the file present in the Azure Blob Storage #1 serve the file suitable to be referenced from html image tage, src attribute, i.e. ***not json***
