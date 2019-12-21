@@ -13,3 +13,50 @@
 * Include markdown documentation
 * Use proper http status code: 200 - for success, 404 - when file is not found in either of the storages, 400 - when file parameter is missing, 500 - when there is an error
 * Enable logging at info, warning, and error levels for the above status codes: 200 - info, 400 & 404 - warning, 500 - error 
+
+## Azure Setup
+
+Repeat the following steps for both Storage 1 and Storage 2:
+
+### Create resource group and storage account
+
+Replace `<resource_group>`, `<storage_name>`, `<location>` with your values: 
+
+    az group create --name <resource_group> --location <location>
+    az storage account create --name <storage_name> --location <location> --resource-group <resource_group> --sku Standard_LRS
+    
+### Construct connection string:
+
+List storage account keys:
+
+    az storage account keys list --account-name <storage_name> --resource-group <resource_group> --output table
+
+Constuct connection string using first key from the list and storage account name:
+
+    DefaultEndpointsProtocol=https;AccountName=<storage_name>;AccountKey=<storage_key>;EndpointSuffix=core.windows.net
+
+### Create file share
+
+Using storage key from the previous step:
+
+    az storage share create --name <share_name> --account-name <storage_name> --account-key <storage_key>
+    
+## Upload sample file to file share
+
+    az storage file upload --share-name <share_name> --account-name <storage_name> --account-key <storage_key> --source "readme.txt"
+    
+## Run and test
+
+1. Copy appsettings.Development.json to the FileService folder.
+2. Run API:
+
+    `cd FileService`
+    
+    `dotnet run`
+    
+3. Request test files: http://localhost:5000/api/file/readme.txt and http://localhost:5000/api/file/image.jpg
+4. Run tests:
+
+    `cd FileService.Tests`
+    
+    `dotnet test`
