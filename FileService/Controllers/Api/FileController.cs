@@ -116,11 +116,13 @@ namespace FileService.Controllers.Api
             await source.DownloadToStreamAsync(downloadStream).ConfigureAwait(false);
             downloadStream.Position = 0;
 
-            using MemoryStream upload = new MemoryStream();
-            downloadStream.CopyTo(upload);
-            upload.Position = 0;
+            using (MemoryStream upload = new MemoryStream())
+            {
+                downloadStream.CopyTo(upload);
+                upload.Position = 0;
 
-            await destination.UploadFromStreamAsync(upload).ConfigureAwait(false);
+                await destination.UploadFromStreamAsync(upload).ConfigureAwait(false);
+            }
 
             downloadStream.Position = 0;
             return downloadStream;
